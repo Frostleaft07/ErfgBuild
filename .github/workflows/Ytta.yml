@@ -37,6 +37,7 @@ jobs:
         with:
           repository: Frostleaft07/GxExTxF
           path: ErfanGSIs
+          submodules: recursive
 
       - name: 777 permissions
         run: |
