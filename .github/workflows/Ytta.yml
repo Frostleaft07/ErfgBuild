@@ -100,7 +100,7 @@ jobs:
         uses: fastai/workflows/ssh@master
         with:
           ssh_key: ${{ secrets.SSH_KEY }}
-          key_file: id_ecdsa
+          key_file: id_rsa
           
       - name: Telegram Notify 2/3
         if: ${{ steps.config.outputs.tg_chat_ids != 0 }}
@@ -112,7 +112,7 @@ jobs:
           chatids=("$CHAT_IDS")
 
           for chat in "${chatids[@]}"; do
-              curl -s -d "chat_id=$chat" --data-urlencode "text=Upload GSI to GH-Release and Sourceforge...." "$TG_URL"
+              curl -s -d "chat_id=$chat" --data-urlencode "text=Uploading...." "$TG_URL"
             done
 
       - name: upload to release
