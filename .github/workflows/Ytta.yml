@@ -162,6 +162,7 @@ jobs:
             for file in "${{ github.workspace }}/ErfanGSIs/infobuild/readme.txt"; do
               filename=$(basename -- "$file")
               sed -i "1s/^/Name: ${filename%.*}\n/" "$file"
+              printf "\n\nFrom Rom: $ROM_NAME_INFO" >> "$file"
               printf "\n\nBase Firmware Link: $BASE" >> "$file"
               printf "\n\nDownload Link: $SOURCEFORGE" >> "$file"
               curl -s -d "chat_id=$chat" --data-urlencode text@$file "$TG_URL"
