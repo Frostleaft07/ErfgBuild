@@ -142,6 +142,28 @@ jobs:
           pip install transfer.sh
           cd $GITHUB_WORKSPACE/ErfanGSIs/upload/
           transfer up *.7z
+          
+      - name: send to topic 
+        if: ${{ steps.config.outputs.topic == 'yes' }}
+        run: |
+          TYPE="${{ steps.config.outputs.firmware_type }}"
+          OUTPUT="${{ steps.config.outputs.output_type }}"
+          BASE="${{ steps.config.outputs.rom_url }}"
+          SOURCEFORGE="${{ steps.config.outputs.sourceforge_url }}"
+          ROM_NAME_INFO="${{ steps.config.outputs.rom_name_info }}"
+         
+          for file in "${{ github.workspace }}/ErfanGSIs/infobuild/readme.txt"; do
+          filename=$(basename -- "$file")
+          sed -i "1s/^/Name: ${filename%.*}\n/" "$file"
+          printf "\n\nROM: $ROM_NAME_INFO" >> "$file"
+          printf "\n\nBase Firmware Link: $BASE" >> "$file"
+          printf "\n\nDownload Link: $SOURCEFORGE" >> "$file"
+                
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TG_BOT_TOKEN }}/sendMessage" \
+          -d "chat_id=${{ steps.config.outputs.tg_chat_ids }}" \
+          --data-urlencode "reply_to_message_id=${{ steps.config.outputs.tg_topic }}" \
+          --data-urlencode "text@${file}"        
+          done
       
 
       - name: Telegram Notify 3/3
